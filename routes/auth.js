@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const passport = require('../config/passport');
-const db = require('../config/database');
+const db = require('../config/database'); // لازم يكون عامل connection بـ pg
 const { ensureGuest } = require('../middleware/auth');
 const router = express.Router();
 
@@ -70,8 +70,8 @@ router.post('/signup', ensureGuest, async (req, res) => {
         }
 
         // Check if user already exists
-        const existingUser = await db.get('SELECT id FROM users WHERE email = $1 ', [email]);
-        if (existingUser) {
+        const existingUser = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+        if (existingUser.rows.length > 0) {
             req.flash('error', 'Email already registered');
             return res.redirect('/signup');
         }
@@ -80,7 +80,7 @@ router.post('/signup', ensureGuest, async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create user
-        await db.run(`
+        await db.query(`
             INSERT INTO users (first_name, last_name, email, phone, password)
             VALUES ($1, $2, $3, $4, $5)
         `, [firstName, lastName, email, phone, hashedPassword]);
@@ -117,7 +117,7 @@ router.get('/auth/google/callback',
 );
 
 // Logout
-router.post('/logout', (req, res) => {
+router.post('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) {
             return next(err);
