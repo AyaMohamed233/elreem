@@ -25,7 +25,7 @@ async function query(sql, params = []) {
 async function run(sql, params = []) {
   const result = await query(sql, params);
   return {
-    insertId: result.rows[0]?.id || null, // بيرجع id لو موجود
+    insertId: result.rows[0]?.id || null,
     rowCount: result.rowCount
   };
 }
@@ -77,9 +77,24 @@ function getPoolStats() {
   };
 }
 
+// Database lifecycle
+async function connect() {
+  const client = await pool.connect();
+  try {
+    await client.query("SELECT 1");
+    console.log("✅ Database connection test passed");
+  } finally {
+    client.release();
+  }
+}
+
+function close() {
+  return pool.end();
+}
+
 module.exports = {
-  connect: () => pool.connect(),
-  close: () => pool.end(),
+  connect,
+  close,
   query,
   run,
   get,
