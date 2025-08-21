@@ -70,7 +70,7 @@ router.post('/signup', ensureGuest, async (req, res) => {
         }
 
         // Check if user already exists
-        const existingUser = await db.get('SELECT id FROM users WHERE email = ?', [email]);
+        const existingUser = await db.get('SELECT id FROM users WHERE email = $1 ', [email]);
         if (existingUser) {
             req.flash('error', 'Email already registered');
             return res.redirect('/signup');
