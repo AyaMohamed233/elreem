@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Elreem Bag Store</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Buffy:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+                <img src="/images/logo.png" alt="Elreem Logo" height="60" class="me-3">
+                <span data-en="Elreem" data-ar="الريم">Elreem</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>
+                            <span data-en="Home" data-ar="الرئيسية">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/orders">
+                            <i class="fas fa-history me-1"></i>
+                            <span data-en="Orders" data-ar="الطلبات">Orders</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reviews">
+                            <i class="fas fa-star me-1"></i>
+                            <span data-en="Reviews" data-ar="التقييمات">Reviews</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-cog me-1"></i>
+                            <span data-en="Admin" data-ar="الإدارة">Admin</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/admin">
+                                <i class="fas fa-tachometer-alt me-1"></i>
+                                <span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span>
+                            </a></li>
+                            <li><a class="dropdown-item active" href="/admin/repository">
+                                <i class="fas fa-boxes me-1"></i>
+                                <span data-en="Inventory" data-ar="المخزون">Inventory</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="/admin/reports">
+                                <i class="fas fa-chart-bar me-1"></i>
+                                <span data-en="Reports" data-ar="التقارير">Reports</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="/admin/reviews">
+                                <i class="fas fa-star me-1"></i>
+                                <span data-en="Reviews" data-ar="التقييمات">Reviews</span>
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <!-- Language Toggle -->
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light btn-sm me-2" id="languageToggle">
+                            <i class="fas fa-language me-1"></i>
+                            <span id="currentLang">EN</span>
+                        </button>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            <%= user.first_name %>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form action="/logout" method="POST" class="d-inline">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-1"></i>
+                                        <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="fas fa-boxes me-2"></i>
+                    <span data-en="Inventory Management" data-ar="إدارة المخزون">Inventory Management</span>
+                </h2>
+            </div>
+        </div>
+
+        <!-- Add Product Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus me-2"></i>
+                    <span data-en="Add New Product" data-ar="إضافة منتج جديد">Add New Product</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="addProductForm" class="needs-validation" novalidate enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nameEn" class="form-label" data-en="Product Name (English)" data-ar="اسم المنتج (إنجليزي)">Product Name (English)</label>
+                            <input type="text" class="form-control" id="nameEn" name="nameEn" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="nameAr" class="form-label" data-en="Product Name (Arabic)" data-ar="اسم المنتج (عربي)">Product Name (Arabic)</label>
+                            <input type="text" class="form-control" id="nameAr" name="nameAr" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="descriptionEn" class="form-label" data-en="Description (English)" data-ar="الوصف (إنجليزي)">Description (English)</label>
+                            <textarea class="form-control" id="descriptionEn" name="descriptionEn" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="descriptionAr" class="form-label" data-en="Description (Arabic)" data-ar="الوصف (عربي)">Description (Arabic)</label>
+                            <textarea class="form-control" id="descriptionAr" name="descriptionAr" rows="3"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="price" class="form-label" data-en="Price (LE)" data-ar="السعر (ج.م)">Price (LE)</label>
+                            <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="quantity" class="form-label" data-en="Quantity" data-ar="الكمية">Quantity</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" min="0" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="images" class="form-label" data-en="Product Images" data-ar="صور المنتج">Product Images</label>
+                            <input type="file" class="form-control" id="images" name="images" multiple accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" data-en="Available Colors" data-ar="الألوان المتاحة">Available Colors</label>
+                        <div id="colorContainer">
+                            <div class="color-input-group mb-2">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="colors[]" placeholder="Color name">
+                                    <button type="button" class="btn btn-outline-danger remove-color-btn">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="addColorBtn">
+                            <i class="fas fa-plus me-1"></i>
+                            <span data-en="Add Color" data-ar="إضافة لون">Add Color</span>
+                        </button>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>
+                        <span data-en="Add Product" data-ar="إضافة منتج">Add Product</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Products List -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    <span data-en="Current Inventory" data-ar="المخزون الحالي">Current Inventory</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <% if (bags && bags.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-striped admin-table">
+                            <thead>
+                                <tr>
+                                    <th data-en="Product" data-ar="المنتج">Product</th>
+                                    <th data-en="Price" data-ar="السعر">Price</th>
+                                    <th data-en="Quantity" data-ar="الكمية">Quantity</th>
+                                    <th data-en="Colors" data-ar="الألوان">Colors</th>
+                                    <th data-en="Actions" data-ar="الإجراءات">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% bags.forEach(function(bag) { %>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <% if (bag.image_urls && bag.image_urls.length > 0) { %>
+                                                    <img src="<%= bag.image_urls[0] %>" class="me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" alt="<%= bag.name_en %>">
+                                                <% } %>
+                                                <div>
+                                                    <strong><%= bag.name_en %></strong><br>
+                                                    <small class="text-muted"><%= bag.name_ar %></small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><%= bag.price %> LE</td>
+                                        <td>
+                                            <span class="badge bg-<%= bag.quantity > 10 ? 'success' : bag.quantity > 0 ? 'warning' : 'danger' %>">
+                                                <%= bag.quantity %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <% if (bag.colors && bag.colors.length > 0) { %>
+                                                <% bag.colors.forEach(function(color) { %>
+                                                    <span class="badge bg-secondary me-1"><%= color %></span>
+                                                <% }); %>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-outline-primary btn-sm edit-product-btn" data-product-id="<%= bag.id %>">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm delete-product-btn" data-product-id="<%= bag.id %>">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <div class="text-center py-4">
+                        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted" data-en="No products in inventory" data-ar="لا توجد منتجات في المخزون">No products in inventory</h5>
+                        <p class="text-muted" data-en="Add your first product using the form above" data-ar="أضف منتجك الأول باستخدام النموذج أعلاه">Add your first product using the form above</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-3 mt-auto" style="background-color: #EDE0D4;">
+        <div class="container">
+            <div class="row">
+                <!-- Contact Information -->
+                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Contact Us" data-ar="اتصل بنا">Contact Us</h6>
+                    <div class="contact-links">
+                        <a href="https://wa.me/201115270040" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #25D366;">
+                            <i class="fab fa-whatsapp me-2" style="font-size: 16px;"></i>
+                            <small data-en="+20 111 527 0040" data-ar="+20 111 527 0040">+20 111 527 0040</small>
+                        </a>
+                        <div class="d-flex align-items-center mb-2" style="color: #2B1D14;">
+                            <i class="fas fa-clock me-2" style="font-size: 14px;"></i>
+                            <small data-en="Available 24/7" data-ar="متاح 24/7">Available 24/7</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Follow Us" data-ar="تابعنا">Follow Us</h6>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/share/g/1CPdTb9KfN/" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #4267B2;">
+                            <i class="fab fa-facebook-f me-2" style="font-size: 16px;"></i>
+                            <small data-en="Facebook Page" data-ar="صفحة فيسبوك">Facebook Page</small>
+                        </a>
+                        <a href="https://www.instagram.com/elreem2751?utm_source=ig_web_button_share_sheet&igsh=MWVlNTh6ZjJybGlhNQ==" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #E4405F;">
+                            <i class="fab fa-instagram me-2" style="font-size: 16px;"></i>
+                            <small data-en="@elreem2751" data-ar="@elreem2751">@elreem2751</small>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Company Info -->
+                <div class="col-lg-4 col-12">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Elreem Store" data-ar="متجر الريم">Elreem Store</h6>
+                    <div class="mb-3">
+                        <img src="/images/slogan.png" alt="Elreem Slogan" class="img-fluid" style="max-height: 40px;">
+                    </div>
+                    <p class="mb-2" style="color: #2B1D14; font-size: 13px;" data-en="Your trusted destination for quality bags and accessories." data-ar="وجهتك الموثوقة للحقائب والإكسسوارات عالية الجودة.">
+                        Your trusted destination for quality bags and accessories.
+                    </p>
+                    <small style="color: #666; font-size: 11px;" data-en="&copy; 2024 Elreem. All rights reserved." data-ar="&copy; 2024 الريم. جميع الحقوق محفوظة;">
+                        &copy; 2024 Elreem. All rights reserved.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

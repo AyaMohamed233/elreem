@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Elreem Bag Store</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Buffy:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+                <img src="/images/logo.png" alt="Elreem Logo" height="60" class="me-3">
+                <span data-en="Elreem" data-ar="الريم">Elreem</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>
+                            <span data-en="Home" data-ar="الرئيسية">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart">
+                            <i class="fas fa-shopping-cart me-1"></i>
+                            <span data-en="Cart" data-ar="السلة">Cart</span>
+                            <span class="badge bg-danger ms-1" id="cartCount">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/orders">
+                            <i class="fas fa-history me-1"></i>
+                            <span data-en="Orders" data-ar="الطلبات">Orders</span>
+                        </a>
+                    </li>
+                    <% if (isAdmin) { %>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-cog me-1"></i>
+                                <span data-en="Admin" data-ar="الإدارة">Admin</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/admin">
+                                    <i class="fas fa-tachometer-alt me-1"></i>
+                                    <span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span>
+                                </a></li>
+                                <li><a class="dropdown-item" href="/admin/repository">
+                                    <i class="fas fa-boxes me-1"></i>
+                                    <span data-en="Inventory" data-ar="المخزون">Inventory</span>
+                                </a></li>
+                                <li><a class="dropdown-item" href="/admin/reports">
+                                    <i class="fas fa-chart-bar me-1"></i>
+                                    <span data-en="Reports" data-ar="التقارير">Reports</span>
+                                </a></li>
+                            </ul>
+                        </li>
+                    <% } %>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <!-- Language Toggle -->
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light btn-sm me-2" id="languageToggle">
+                            <i class="fas fa-language me-1"></i>
+                            <span id="currentLang">EN</span>
+                        </button>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            <%= user.first_name %>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form action="/logout" method="POST" class="d-inline">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-1"></i>
+                                        <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" data-en="Home" data-ar="الرئيسية">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <span data-en="<%= bag.name_en %>" data-ar="<%= bag.name_ar %>"><%= bag.name_en %></span>
+                </li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-lg-6 mb-4">
+                <div class="product-images">
+                    <% if (bag.image_urls && bag.image_urls.length > 0) { %>
+                        <!-- Main Image -->
+                        <div class="main-image mb-3">
+                            <img src="<%= bag.image_urls[0] %>" class="img-fluid rounded" id="mainProductImage" alt="<%= bag.name_en %>">
+                        </div>
+                        
+                        <!-- Thumbnail Images -->
+                        <% if (bag.image_urls.length > 1) { %>
+                            <div class="image-gallery">
+                                <% bag.image_urls.forEach(function(imageUrl, index) { %>
+                                    <img src="<%= imageUrl %>" class="gallery-image <%= index === 0 ? 'active' : '' %>" 
+                                         onclick="changeMainImage('<%= imageUrl %>')" alt="<%= bag.name_en %>">
+                                <% }); %>
+                            </div>
+                        <% } %>
+                    <% } else { %>
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 400px;">
+                            <i class="fas fa-shopping-bag fa-5x text-muted"></i>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="col-lg-6">
+                <div class="product-details">
+                    <h1 class="mb-3">
+                        <span data-en="<%= bag.name_en %>" data-ar="<%= bag.name_ar %>"><%= bag.name_en %></span>
+                    </h1>
+                    
+                    <div class="price mb-3">
+                        <span class="h3 text-success"><%= bag.price %> LE</span>
+                    </div>
+
+                    <% if (bag.description_en || bag.description_ar) { %>
+                        <div class="description mb-4">
+                            <h5 data-en="Description" data-ar="الوصف">Description</h5>
+                            <p data-en="<%= bag.description_en || '' %>" data-ar="<%= bag.description_ar || '' %>">
+                                <%= bag.description_en || '' %>
+                            </p>
+                        </div>
+                    <% } %>
+
+                    <!-- Stock Status -->
+                    <div class="stock-status mb-3">
+                        <% if (bag.quantity > 0) { %>
+                            <span class="badge bg-success">
+                                <i class="fas fa-check me-1"></i>
+                                <span data-en="In Stock (<%= bag.quantity %> available)" data-ar="متوفر (<%= bag.quantity %> قطعة)">
+                                    In Stock (<%= bag.quantity %> available)
+                                </span>
+                            </span>
+                        <% } else { %>
+                            <span class="badge bg-danger">
+                                <i class="fas fa-times me-1"></i>
+                                <span data-en="Out of Stock" data-ar="نفد المخزون">Out of Stock</span>
+                            </span>
+                        <% } %>
+                    </div>
+
+                    <!-- Colors -->
+                    <% if (bag.colors && bag.colors.length > 0) { %>
+                        <div class="colors mb-4">
+                            <h6 data-en="Available Colors:" data-ar="الألوان المتاحة:">Available Colors:</h6>
+                            <div class="color-options">
+                                <% bag.colors.forEach(function(color, index) { %>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="selectedColor" 
+                                               id="color<%= index %>" value="<%= color %>" <%= index === 0 ? 'checked' : '' %>>
+                                        <label class="form-check-label" for="color<%= index %>">
+                                            <span class="color-swatch" style="background-color: <%= color.toLowerCase() %>; display: inline-block; width: 20px; height: 20px; border-radius: 50%; margin-right: 8px; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></span>
+                                            <%= color %>
+                                        </label>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- Quantity -->
+                    <div class="quantity mb-4">
+                        <h6 data-en="Quantity:" data-ar="الكمية:">Quantity:</h6>
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn" onclick="decreaseQuantity()">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="productQuantity" class="quantity-input" value="1" min="1" max="<%= bag.quantity %>">
+                            <button type="button" class="quantity-btn" onclick="increaseQuantity()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Add to Cart Button -->
+                    <% if (bag.quantity > 0) { %>
+                        <button class="btn btn-primary btn-lg w-100 mb-3" onclick="addToCart()">
+                            <i class="fas fa-cart-plus me-2"></i>
+                            <span data-en="Add to Cart" data-ar="أضف للسلة">Add to Cart</span>
+                        </button>
+                    <% } else { %>
+                        <button class="btn btn-secondary btn-lg w-100 mb-3" disabled>
+                            <i class="fas fa-times me-2"></i>
+                            <span data-en="Out of Stock" data-ar="نفد المخزون">Out of Stock</span>
+                        </button>
+                    <% } %>
+
+                    <!-- Back to Products -->
+                    <a href="/" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        <span data-en="Continue Shopping" data-ar="متابعة التسوق">Continue Shopping</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-4 mt-auto" style="background-color: #EDE0D4; border-top: 1px solid rgba(43, 29, 20, 0.1);">
+        <div class="container">
+            <div class="row">
+                <!-- Contact Information -->
+                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Contact Us" data-ar="اتصل بنا">Contact Us</h6>
+                    <div class="contact-links">
+                        <a href="https://wa.me/201115270040" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #25D366;">
+                            <i class="fab fa-whatsapp me-2" style="font-size: 16px;"></i>
+                            <small data-en="+20 111 527 0040" data-ar="+20 111 527 0040">+20 111 527 0040</small>
+                        </a>
+                        <div class="d-flex align-items-center mb-2" style="color: #2B1D14;">
+                            <i class="fas fa-clock me-2" style="font-size: 14px;"></i>
+                            <small data-en="Available 24/7" data-ar="متاح 24/7">Available 24/7</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Follow Us" data-ar="تابعنا">Follow Us</h6>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/share/g/1CPdTb9KfN/" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #4267B2;">
+                            <i class="fab fa-facebook-f me-2" style="font-size: 16px;"></i>
+                            <small data-en="Facebook Page" data-ar="صفحة فيسبوك">Facebook Page</small>
+                        </a>
+                        <a href="https://www.instagram.com/elreem2751?utm_source=ig_web_button_share_sheet&igsh=MWVlNTh6ZjJybGlhNQ==" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #E4405F;">
+                            <i class="fab fa-instagram me-2" style="font-size: 16px;"></i>
+                            <small data-en="@elreem2751" data-ar="@elreem2751">@elreem2751</small>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Company Info -->
+                <div class="col-lg-4 col-12">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Elreem Store" data-ar="متجر الريم">Elreem Store</h6>
+                    <div class="mb-3">
+                        <img src="/images/slogan.png" alt="Elreem Slogan" class="img-fluid" style="max-height: 40px;">
+                    </div>
+                    <p class="mb-2" style="color: #2B1D14; font-size: 13px;" data-en="Your trusted destination for quality bags and accessories." data-ar="وجهتك الموثوقة للحقائب والإكسسوارات عالية الجودة.">
+                        Your trusted destination for quality bags and accessories.
+                    </p>
+                    <small style="color: #666; font-size: 11px;" data-en="&copy; 2024 Elreem. All rights reserved." data-ar="&copy; 2024 الريم. جميع الحقوق محفوظة;">
+                        &copy; 2024 Elreem. All rights reserved.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <script src="/js/cart.js"></script>
+    
+    <script>
+        function changeMainImage(imageUrl) {
+            document.getElementById('mainProductImage').src = imageUrl;
+            
+            // Update active thumbnail
+            document.querySelectorAll('.gallery-image').forEach(img => img.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function increaseQuantity() {
+            const input = document.getElementById('productQuantity');
+            const max = parseInt(input.max);
+            const current = parseInt(input.value);
+            if (current < max) {
+                input.value = current + 1;
+            }
+        }
+
+        function decreaseQuantity() {
+            const input = document.getElementById('productQuantity');
+            const current = parseInt(input.value);
+            if (current > 1) {
+                input.value = current - 1;
+            }
+        }
+
+        async function addToCart() {
+            const quantity = parseInt(document.getElementById('productQuantity').value);
+            const selectedColor = document.querySelector('input[name="selectedColor"]:checked')?.value || '';
+
+            // Validate inputs
+            if (!quantity || quantity < 1) {
+                alert('Please select a valid quantity');
+                return;
+            }
+
+            // Show loading state
+            const button = document.querySelector('button[onclick="addToCart()"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding...';
+            button.disabled = true;
+
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        bagId: bagId,
+                        quantity: quantity,
+                        selectedColor: selectedColor
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Item added to cart successfully!');
+
+                    // Ask if user wants to view cart
+                    if (confirm('Would you like to view your cart?')) {
+                        window.location.href = '/cart';
+                    }
+                } else {
+                    alert(data.error || 'Failed to add item to cart');
+                }
+
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                alert('Failed to add item to cart. Please try again.');
+            } finally {
+                // Restore button state
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

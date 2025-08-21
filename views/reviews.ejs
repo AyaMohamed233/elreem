@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Elreem Bag Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Buffy:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="/images/logo.png" alt="Elreem Logo" height="60" class="me-3">
+                <span data-en="Elreem Store" data-ar="متجر الريم">Elreem Store</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">
+                                <i class="fas fa-home me-1"></i>
+                                <span data-en="Home" data-ar="الرئيسية">Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/cart">
+                                <i class="fas fa-shopping-cart me-1"></i>
+                                <span data-en="Cart" data-ar="السلة">Cart</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/orders">
+                                <i class="fas fa-history me-1"></i>
+                                <span data-en="Orders" data-ar="الطلبات">Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/reviews">
+                                <i class="fas fa-star me-1"></i>
+                                <span data-en="Reviews" data-ar="التقييمات">Reviews</span>
+                            </a>
+                        </li>
+                        <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-cog me-1"></i>
+                                    <span data-en="Admin" data-ar="الإدارة">Admin</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/admin">
+                                        <i class="fas fa-tachometer-alt me-1"></i>
+                                        <span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span>
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="/admin/repository">
+                                        <i class="fas fa-boxes me-1"></i>
+                                        <span data-en="Inventory" data-ar="المخزون">Inventory</span>
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="/admin/reports">
+                                        <i class="fas fa-chart-bar me-1"></i>
+                                        <span data-en="Reports" data-ar="التقارير">Reports</span>
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="/admin/reviews">
+                                        <i class="fas fa-star me-1"></i>
+                                        <span data-en="Reviews" data-ar="التقييمات">Reviews</span>
+                                    </a></li>
+                                </ul>
+                            </li>
+                        <% } %>
+                    <% } %>
+                </ul>
+
+                <ul class="navbar-nav">
+                    <!-- Language Toggle -->
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light btn-sm me-2" id="languageToggle">
+                            <i class="fas fa-language me-1"></i>
+                            <span id="currentLang">EN</span>
+                        </button>
+                    </li>
+
+                    <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i>
+                                <span data-en="Account" data-ar="الحساب">Account</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <form action="/logout" method="POST" class="d-inline">
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fas fa-sign-out-alt me-1"></i>
+                                            <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">
+                                <i class="fas fa-sign-in-alt me-1"></i>
+                                <span data-en="Login" data-ar="تسجيل الدخول">Login</span>
+                            </a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1">
+        <div class="container-fluid">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-star me-2"></i>
+                    <span data-en="Reviews" data-ar="التقييمات">Reviews</span>
+                </h2>
+            </div>
+
+            <!-- Add New Review Section -->
+            <% if (availableBags && availableBags.length > 0) { %>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-plus me-2"></i>
+                            <span data-en="Add New Review" data-ar="إضافة تقييم جديد">Add New Review</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="reviewForm" class="needs-validation" novalidate>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="bagSelect" class="form-label">
+                                        <span data-en="Select Product" data-ar="اختر المنتج">Select Product</span>
+                                    </label>
+                                    <select class="form-select" id="bagSelect" name="bagId" required>
+                                        <option value="" data-en="Choose a product..." data-ar="اختر منتج...">Choose a product...</option>
+                                        <% availableBags.forEach(function(bag) { %>
+                                            <option value="<%= bag.id %>">
+                                                <span data-en="<%= bag.name_en %>" data-ar="<%= bag.name_ar %>"><%= bag.name_en %></span>
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        <span data-en="Please select a product" data-ar="يرجى اختيار منتج">Please select a product</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <span data-en="Rating" data-ar="التقييم">Rating</span>
+                                    </label>
+                                    <div class="star-rating" id="starRating">
+                                        <i class="fas fa-star" data-rating="1"></i>
+                                        <i class="fas fa-star" data-rating="2"></i>
+                                        <i class="fas fa-star" data-rating="3"></i>
+                                        <i class="fas fa-star" data-rating="4"></i>
+                                        <i class="fas fa-star" data-rating="5"></i>
+                                    </div>
+                                    <input type="hidden" id="ratingInput" name="rating" required>
+                                    <div class="invalid-feedback">
+                                        <span data-en="Please select a rating" data-ar="يرجى اختيار تقييم">Please select a rating</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="reviewText" class="form-label">
+                                    <span data-en="Review (Optional)" data-ar="التقييم (اختياري)">Review (Optional)</span>
+                                </label>
+                                <textarea class="form-control" id="reviewText" name="reviewText" rows="4" 
+                                    data-placeholder="review" maxlength="500"></textarea>
+                                <div class="form-text">
+                                    <span data-en="Maximum 500 characters" data-ar="حد أقصى 500 حرف">Maximum 500 characters</span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                <span data-en="Submit Review" data-ar="إرسال التقييم">Submit Review</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <% } %>
+
+            <!-- User's Previous Reviews -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>
+                        <span data-en="Your Reviews" data-ar="تقييماتك">Your Reviews</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <% if (userReviews && userReviews.length > 0) { %>
+                        <div class="row">
+                            <% userReviews.forEach(function(review) { %>
+                                <div class="col-md-6 mb-4">
+                                    <div class="review-card">
+                                        <div class="d-flex align-items-start">
+                                            <div class="review-image me-3">
+                                                <% if (review.image_urls && review.image_urls.length > 0) { %>
+                                                    <img src="<%= review.image_urls[0] %>" alt="<%= review.name_en %>" class="img-fluid rounded">
+                                                <% } else { %>
+                                                    <div class="placeholder-image">
+                                                        <i class="fas fa-shopping-bag"></i>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                            <div class="review-content flex-grow-1">
+                                                <h6 class="review-product-name">
+                                                    <span data-en="<%= review.name_en %>" data-ar="<%= review.name_ar %>"><%= review.name_en %></span>
+                                                </h6>
+                                                <div class="review-rating mb-2">
+                                                    <% for (let i = 1; i <= 5; i++) { %>
+                                                        <i class="fas fa-star <%= i <= review.rating ? 'text-warning' : 'text-muted' %>"></i>
+                                                    <% } %>
+                                                    <span class="ms-2 text-muted">(<%= review.rating %>/5)</span>
+                                                </div>
+                                                <% if (review.review_text) { %>
+                                                    <p class="review-text"><%= review.review_text %></p>
+                                                <% } %>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-calendar me-1"></i>
+                                                    <%= new Date(review.created_at).toLocaleDateString() %>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center py-5">
+                            <i class="fas fa-star fa-5x text-muted mb-4"></i>
+                            <h4 class="text-muted mb-3" data-en="No reviews yet" data-ar="لا توجد تقييمات بعد">No reviews yet</h4>
+                            <p class="text-muted mb-4" data-en="Share your experience with products you've purchased" data-ar="شارك تجربتك مع المنتجات التي اشتريتها">Share your experience with products you've purchased</p>
+                            <% if (availableBags && availableBags.length === 0) { %>
+                                <a href="/" class="btn btn-primary">
+                                    <i class="fas fa-shopping-bag me-2"></i>
+                                    <span data-en="Start Shopping" data-ar="ابدأ التسوق">Start Shopping</span>
+                                </a>
+                            <% } %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="reviewToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i class="fas fa-star text-warning me-2"></i>
+            <strong class="me-auto" data-en="Review" data-ar="التقييم">Review</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="reviewToastBody">
+            <!-- Toast message will be inserted here -->
+        </div>
+    </div>
+</div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-4 mt-auto" style="background-color: #EDE0D4; border-top: 1px solid rgba(43, 29, 20, 0.1);">
+        <div class="container">
+            <div class="row">
+                <!-- Contact Information -->
+                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Contact Us" data-ar="اتصل بنا">Contact Us</h6>
+                    <div class="contact-links">
+                        <a href="https://wa.me/201115270040" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #25D366;">
+                            <i class="fab fa-whatsapp me-2" style="font-size: 16px;"></i>
+                            <small data-en="+20 111 527 0040" data-ar="+20 111 527 0040">+20 111 527 0040</small>
+                        </a>
+                        <div class="d-flex align-items-center mb-2" style="color: #2B1D14;">
+                            <i class="fas fa-clock me-2" style="font-size: 14px;"></i>
+                            <small data-en="Available 24/7" data-ar="متاح 24/7">Available 24/7</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Follow Us" data-ar="تابعنا">Follow Us</h6>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/share/g/1CPdTb9KfN/" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #4267B2;">
+                            <i class="fab fa-facebook-f me-2" style="font-size: 16px;"></i>
+                            <small data-en="Facebook Page" data-ar="صفحة فيسبوك">Facebook Page</small>
+                        </a>
+                        <a href="https://www.instagram.com/elreem2751?utm_source=ig_web_button_share_sheet&igsh=MWVlNTh6ZjJybGlhNQ==" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #E4405F;">
+                            <i class="fab fa-instagram me-2" style="font-size: 16px;"></i>
+                            <small data-en="@elreem2751" data-ar="@elreem2751">@elreem2751</small>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Company Info -->
+                <div class="col-lg-4 col-12">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Elreem Store" data-ar="متجر الريم">Elreem Store</h6>
+                    <div class="mb-3">
+                        <img src="/images/slogan.png" alt="Elreem Slogan" class="img-fluid" style="max-height: 40px;">
+                    </div>
+                    <p class="mb-2" style="color: #2B1D14; font-size: 13px;" data-en="Your trusted destination for quality bags and accessories." data-ar="وجهتك الموثوقة للحقائب والإكسسوارات عالية الجودة.">
+                        Your trusted destination for quality bags and accessories.
+                    </p>
+                    <small style="color: #666; font-size: 11px;" data-en="&copy; 2024 Elreem. All rights reserved." data-ar="&copy; 2024 الريم. جميع الحقوق محفوظة;">
+                        &copy; 2024 Elreem. All rights reserved.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+    <script src="/js/reviews.js"></script>
+</body>
+</html>

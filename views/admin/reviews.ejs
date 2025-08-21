@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Elreem Bag Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Buffy:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+                <img src="/images/logo.png" alt="Elreem Logo" height="60" class="me-3">
+                <span data-en="Elreem" data-ar="الريم">Elreem</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>
+                            <span data-en="Home" data-ar="الرئيسية">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-cog me-1"></i>
+                            <span data-en="Admin" data-ar="الإدارة">Admin</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/admin">
+                                <i class="fas fa-tachometer-alt me-1"></i>
+                                <span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="/admin/repository">
+                                <i class="fas fa-boxes me-1"></i>
+                                <span data-en="Inventory" data-ar="المخزون">Inventory</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="/admin/reports">
+                                <i class="fas fa-chart-bar me-1"></i>
+                                <span data-en="Reports" data-ar="التقارير">Reports</span>
+                            </a></li>
+                            <li><a class="dropdown-item active" href="/admin/reviews">
+                                <i class="fas fa-star me-1"></i>
+                                <span data-en="Reviews" data-ar="التقييمات">Reviews</span>
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav">
+                    <!-- Language Toggle -->
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light btn-sm me-2" id="languageToggle">
+                            <i class="fas fa-language me-1"></i>
+                            <span id="currentLang">EN</span>
+                        </button>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            <span data-en="Account" data-ar="الحساب">Account</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form action="/logout" method="POST" class="d-inline">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-1"></i>
+                                        <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid py-4">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-star me-2"></i>
+                    <span data-en="Reviews Management" data-ar="إدارة التقييمات">Reviews Management</span>
+                </h2>
+            </div>
+
+            <!-- Reviews Statistics -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0"><%= reviews.length %></h4>
+                                    <p class="mb-0" data-en="Total Reviews" data-ar="إجمالي التقييمات">Total Reviews</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-star fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">
+                                        <%= reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : '0.0' %>
+                                    </h4>
+                                    <p class="mb-0" data-en="Average Rating" data-ar="متوسط التقييم">Average Rating</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-chart-line fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0"><%= reviews.filter(r => r.rating >= 4).length %></h4>
+                                    <p class="mb-0" data-en="Positive Reviews" data-ar="التقييمات الإيجابية">Positive Reviews</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-thumbs-up fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0"><%= reviews.filter(r => r.rating <= 2).length %></h4>
+                                    <p class="mb-0" data-en="Negative Reviews" data-ar="التقييمات السلبية">Negative Reviews</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-thumbs-down fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Table -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover admin-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th data-en="Customer" data-ar="العميل">Customer</th>
+                                    <th data-en="Product" data-ar="المنتج">Product</th>
+                                    <th data-en="Rating" data-ar="التقييم">Rating</th>
+                                    <th data-en="Review" data-ar="المراجعة">Review</th>
+                                    <th data-en="Date" data-ar="التاريخ">Date</th>
+                                    <th data-en="Actions" data-ar="الإجراءات">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (reviews && reviews.length > 0) { %>
+                                    <% reviews.forEach(function(review) { %>
+                                        <tr data-review-id="<%= review.id %>">
+                                            <td>
+                                                <div>
+                                                    <strong><%= review.first_name %> <%= review.last_name %></strong><br>
+                                                    <small class="text-muted"><%= review.email %></small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span data-en="<%= review.name_en %>" data-ar="<%= review.name_ar %>"><%= review.name_en %></span>
+                                            </td>
+                                            <td>
+                                                <div class="rating-display">
+                                                    <% for (let i = 1; i <= 5; i++) { %>
+                                                        <i class="fas fa-star <%= i <= review.rating ? 'text-warning' : 'text-muted' %>"></i>
+                                                    <% } %>
+                                                    <span class="ms-2">(<%= review.rating %>/5)</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <% if (review.review_text) { %>
+                                                    <div class="review-text-preview" title="<%= review.review_text %>">
+                                                        <%= review.review_text.length > 50 ? review.review_text.substring(0, 50) + '...' : review.review_text %>
+                                                    </div>
+                                                <% } else { %>
+                                                    <span class="text-muted" data-en="No review text" data-ar="لا يوجد نص للمراجعة">No review text</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <small><%= new Date(review.created_at).toLocaleDateString() %></small>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-outline-danger btn-sm delete-review-btn" data-review-id="<%= review.id %>">
+                                                    <i class="fas fa-trash me-1"></i>
+                                                    <span data-en="Delete" data-ar="حذف">Delete</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="6" class="text-center py-5">
+                                            <i class="fas fa-star fa-3x text-muted mb-3"></i>
+                                            <h5 class="text-muted" data-en="No reviews found" data-ar="لا توجد تقييمات">No reviews found</h5>
+                                            <p class="text-muted" data-en="Customer reviews will appear here" data-ar="ستظهر تقييمات العملاء هنا">Customer reviews will appear here</p>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteReviewModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        <span data-en="Confirm Delete" data-ar="تأكيد الحذف">Confirm Delete</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p data-en="Are you sure you want to delete this review? This action cannot be undone."
+                       data-ar="هل أنت متأكد من أنك تريد حذف هذا التقييم؟ لا يمكن التراجع عن هذا الإجراء.">
+                       Are you sure you want to delete this review? This action cannot be undone.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <span data-en="Cancel" data-ar="إلغاء">Cancel</span>
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteReview">
+                        <i class="fas fa-trash me-1"></i>
+                        <span data-en="Delete Review" data-ar="حذف التقييم">Delete Review</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-3 mt-auto" style="background-color: #EDE0D4;">
+        <div class="container">
+            <div class="row">
+                <!-- Contact Information -->
+                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Contact Us" data-ar="اتصل بنا">Contact Us</h6>
+                    <div class="contact-links">
+                        <a href="https://wa.me/201115270040" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #25D366;">
+                            <i class="fab fa-whatsapp me-2" style="font-size: 16px;"></i>
+                            <small data-en="+20 111 527 0040" data-ar="+20 111 527 0040">+20 111 527 0040</small>
+                        </a>
+                        <div class="d-flex align-items-center mb-2" style="color: #2B1D14;">
+                            <i class="fas fa-clock me-2" style="font-size: 14px;"></i>
+                            <small data-en="Available 24/7" data-ar="متاح 24/7">Available 24/7</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Follow Us" data-ar="تابعنا">Follow Us</h6>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/share/g/1CPdTb9KfN/" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #4267B2;">
+                            <i class="fab fa-facebook-f me-2" style="font-size: 16px;"></i>
+                            <small data-en="Facebook Page" data-ar="صفحة فيسبوك">Facebook Page</small>
+                        </a>
+                        <a href="https://www.instagram.com/elreem2751?utm_source=ig_web_button_share_sheet&igsh=MWVlNTh6ZjJybGlhNQ==" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #E4405F;">
+                            <i class="fab fa-instagram me-2" style="font-size: 16px;"></i>
+                            <small data-en="@elreem2751" data-ar="@elreem2751">@elreem2751</small>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Company Info -->
+                <div class="col-lg-4 col-12">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Elreem Store" data-ar="متجر الريم">Elreem Store</h6>
+                    <div class="mb-3">
+                        <img src="/images/slogan.png" alt="Elreem Slogan" class="img-fluid" style="max-height: 40px;">
+                    </div>
+                    <p class="mb-2" style="color: #2B1D14; font-size: 13px;" data-en="Your trusted destination for quality bags and accessories." data-ar="وجهتك الموثوقة للحقائب والإكسسوارات عالية الجودة.">
+                        Your trusted destination for quality bags and accessories.
+                    </p>
+                    <small style="color: #666; font-size: 11px;" data-en="&copy; 2024 Elreem. All rights reserved." data-ar="&copy; 2024 الريم. جميع الحقوق محفوظة;">
+                        &copy; 2024 Elreem. All rights reserved.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+    <script src="/js/reviews.js"></script>
+</body>
+</html>

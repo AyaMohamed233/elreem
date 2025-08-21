@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Elreem Bag Store</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Buffy:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+                <img src="/images/logo.png" alt="Elreem Logo" height="60" class="me-3">
+                <span data-en="Elreem" data-ar="الريم">Elreem</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>
+                            <span data-en="Home" data-ar="الرئيسية">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart">
+                            <i class="fas fa-shopping-cart me-1"></i>
+                            <span data-en="Cart" data-ar="السلة">Cart</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/orders">
+                            <i class="fas fa-history me-1"></i>
+                            <span data-en="Orders" data-ar="الطلبات">Orders</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reviews">
+                            <i class="fas fa-star me-1"></i>
+                            <span data-en="Reviews" data-ar="التقييمات">Reviews</span>
+                        </a>
+                    </li>
+                    <% if (isAdmin) { %>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-cog me-1"></i>
+                                <span data-en="Admin" data-ar="الإدارة">Admin</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/admin">
+                                    <i class="fas fa-tachometer-alt me-1"></i>
+                                    <span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span>
+                                </a></li>
+                                <li><a class="dropdown-item" href="/admin/repository">
+                                    <i class="fas fa-boxes me-1"></i>
+                                    <span data-en="Inventory" data-ar="المخزون">Inventory</span>
+                                </a></li>
+                                <li><a class="dropdown-item" href="/admin/reports">
+                                    <i class="fas fa-chart-bar me-1"></i>
+                                    <span data-en="Reports" data-ar="التقارير">Reports</span>
+                                </a></li>
+                            </ul>
+                        </li>
+                    <% } %>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <!-- Language Toggle -->
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light btn-sm me-2" id="languageToggle">
+                            <i class="fas fa-language me-1"></i>
+                            <span id="currentLang">EN</span>
+                        </button>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            <%= user.first_name %>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form action="/logout" method="POST" class="d-inline">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-1"></i>
+                                        <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="fas fa-history me-2"></i>
+                    <span data-en="Order History" data-ar="تاريخ الطلبات">Order History</span>
+                </h2>
+            </div>
+        </div>
+
+        <% if (orders && orders.length > 0) { %>
+            <!-- Order Summary -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0"><%= orders.length %></h4>
+                                    <p class="mb-0" data-en="Total Orders" data-ar="إجمالي الطلبات">Total Orders</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-shopping-cart fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0"><%= orders.reduce((sum, order) => sum + parseFloat(order.total_amount || 0), 0).toFixed(2) %> LE</h4>
+                                    <p class="mb-0" data-en="Total Spent" data-ar="إجمالي المبلغ">Total Spent</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-dollar-sign fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0"><%= orders.filter(order => order.status === 'Confirmed').length %></h4>
+                                    <p class="mb-0" data-en="Confirmed" data-ar="مؤكد">Confirmed</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0"><%= orders.filter(order => order.status === 'Delivered').length %></h4>
+                                    <p class="mb-0" data-en="Delivered" data-ar="تم التسليم">Delivered</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover orders-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th data-en="Order ID" data-ar="رقم الطلب">Order ID</th>
+                                    <th data-en="Customer" data-ar="العميل">Customer</th>
+                                    <th data-en="Items" data-ar="العناصر">Items</th>
+                                    <th data-en="Total" data-ar="المجموع">Total</th>
+                                    <th data-en="Status" data-ar="الحالة">Status</th>
+                                    <th data-en="Date" data-ar="التاريخ">Date</th>
+                                    <th data-en="Actions" data-ar="الإجراءات">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% orders.forEach(function(order) { %>
+                                    <tr data-order-id="<%= order.id %>">
+                                        <td>
+                                            <strong>#<%= order.id %></strong>
+                                        </td>
+                                        <td>
+                                            <% if (order.customer_name) { %>
+                                                <div>
+                                                    <strong><%= order.customer_name %></strong><br>
+                                                    <small class="text-muted"><%= order.customer_phone %></small><br>
+                                                    <small class="text-muted"><%= order.customer_address %></small>
+                                                </div>
+                                            <% } else { %>
+                                                <span class="text-muted" data-en="No customer info" data-ar="لا توجد معلومات العميل">No customer info</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (order.items && order.items.length > 0) { %>
+                                                <div class="items-list">
+                                                    <% order.items.forEach(function(item, index) { %>
+                                                        <div class="item-row <%= index > 0 ? 'mt-2 pt-2 border-top' : '' %>">
+                                                            <div class="item-name">
+                                                                <strong class="text-primary">
+                                                                    <span data-en="<%= item.bag_name_en %>" data-ar="<%= item.bag_name_ar %>"><%= item.bag_name_en %></span>
+                                                                </strong>
+                                                            </div>
+                                                            <div class="item-details">
+                                                                <span class="badge bg-secondary me-1">
+                                                                    <span data-en="Qty: <%= item.quantity %>" data-ar="الكمية: <%= item.quantity %>">Qty: <%= item.quantity %></span>
+                                                                </span>
+                                                                <% if (item.selected_color) { %>
+                                                                    <span class="badge bg-info me-1">
+                                                                        <span data-en="<%= item.selected_color %>" data-ar="<%= item.selected_color %>"><%= item.selected_color %></span>
+                                                                    </span>
+                                                                <% } %>
+                                                                <span class="badge bg-success">
+                                                                    <%= item.price %> LE
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    <% }); %>
+                                                </div>
+                                            <% } else { %>
+                                                <div class="text-center text-muted">
+                                                    <i class="fas fa-box-open mb-1"></i><br>
+                                                    <small data-en="No items" data-ar="لا توجد عناصر">No items</small>
+                                                </div>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <strong class="text-success"><%= order.total_amount %> LE</strong>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge status-<%= order.status.toLowerCase().replace(' ', '-') %>">
+                                                <%
+                                                    let statusAr = '';
+                                                    switch(order.status) {
+                                                        case 'Confirmed': statusAr = 'مؤكد'; break;
+                                                        case 'In Progress': statusAr = 'قيد التنفيذ'; break;
+                                                        case 'Delivered': statusAr = 'تم التسليم'; break;
+                                                        case 'Canceled': statusAr = 'ملغي'; break;
+                                                        default: statusAr = order.status;
+                                                    }
+                                                %>
+                                                <span data-en="<%= order.status %>" data-ar="<%= statusAr %>"><%= order.status %></span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small><%= new Date(order.created_at).toLocaleDateString() %></small>
+                                        </td>
+                                        <td>
+                                            <% if (order.status === 'Confirmed') { %>
+                                                <button class="btn btn-outline-danger btn-sm cancel-order-btn" data-order-id="<%= order.id %>">
+                                                    <i class="fas fa-times me-1"></i>
+                                                    <span data-en="Cancel" data-ar="إلغاء">Cancel</span>
+                                                </button>
+                                            <% } else { %>
+                                                <span class="text-muted" data-en="No actions" data-ar="لا توجد إجراءات">-</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <% } else { %>
+            <!-- No Orders -->
+            <div class="text-center py-5">
+                <i class="fas fa-history fa-5x text-muted mb-4"></i>
+                <h4 class="text-muted mb-3" data-en="No orders found" data-ar="لا توجد طلبات">No orders found</h4>
+                <p class="text-muted mb-4" data-en="Place your first order to see it here" data-ar="اطلب طلبك الأول لرؤيته هنا">Place your first order to see it here</p>
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-shopping-bag me-2"></i>
+                    <span data-en="Start Shopping" data-ar="ابدأ التسوق">Start Shopping</span>
+                </a>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-4 mt-auto" style="background-color: #EDE0D4; border-top: 1px solid rgba(43, 29, 20, 0.1);">
+        <div class="container">
+            <div class="row">
+                <!-- Contact Information -->
+                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Contact Us" data-ar="اتصل بنا">Contact Us</h6>
+                    <div class="contact-links">
+                        <a href="https://wa.me/201115270040" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #25D366;">
+                            <i class="fab fa-whatsapp me-2" style="font-size: 16px;"></i>
+                            <small data-en="+20 111 527 0040" data-ar="+20 111 527 0040">+20 111 527 0040</small>
+                        </a>
+                        <div class="d-flex align-items-center mb-2" style="color: #2B1D14;">
+                            <i class="fas fa-clock me-2" style="font-size: 14px;"></i>
+                            <small data-en="Available 24/7" data-ar="متاح 24/7">Available 24/7</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Follow Us" data-ar="تابعنا">Follow Us</h6>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/share/g/1CPdTb9KfN/" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #4267B2;">
+                            <i class="fab fa-facebook-f me-2" style="font-size: 16px;"></i>
+                            <small data-en="Facebook Page" data-ar="صفحة فيسبوك">Facebook Page</small>
+                        </a>
+                        <a href="https://www.instagram.com/elreem2751?utm_source=ig_web_button_share_sheet&igsh=MWVlNTh6ZjJybGlhNQ==" target="_blank" class="d-flex align-items-center text-decoration-none mb-2" style="color: #E4405F;">
+                            <i class="fab fa-instagram me-2" style="font-size: 16px;"></i>
+                            <small data-en="@elreem2751" data-ar="@elreem2751">@elreem2751</small>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Company Info -->
+                <div class="col-lg-4 col-12">
+                    <h6 class="fw-bold mb-3" style="color: #2B1D14;" data-en="Elreem Store" data-ar="متجر الريم">Elreem Store</h6>
+                    <div class="mb-3">
+                        <img src="/images/slogan.png" alt="Elreem Slogan" class="img-fluid" style="max-height: 40px;">
+                    </div>
+                    <p class="mb-2" style="color: #2B1D14; font-size: 13px;" data-en="Your trusted destination for quality bags and accessories." data-ar="وجهتك الموثوقة للحقائب والإكسسوارات عالية الجودة.">
+                        Your trusted destination for quality bags and accessories.
+                    </p>
+                    <small style="color: #666; font-size: 11px;" data-en="&copy; 2024 Elreem. All rights reserved." data-ar="&copy; 2024 الريم. جميع الحقوق محفوظة;">
+                        &copy; 2024 Elreem. All rights reserved.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <script src="/js/cart.js"></script>
+</body>
+</html>

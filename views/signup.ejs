@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Elreem Bag Store</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Buffy:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Responsive Login Box Styles -->
+    <style>
+        .responsive-login-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 2px solid #D4A574;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        /* Desktop and Large Tablets */
+        @media (min-width: 768px) {
+            .responsive-login-box {
+                width: 100%;
+                padding: 3rem;
+            }
+        }
+
+        /* Small Tablets */
+        @media (max-width: 767px) and (min-width: 481px) {
+            .responsive-login-box {
+                width: 95%;
+                padding: 2rem;
+            }
+        }
+
+        /* Mobile Phones */
+        @media (max-width: 480px) {
+            .responsive-login-box {
+                width: 95%;
+                padding: 1.5rem;
+                border-radius: 15px;
+            }
+
+            .responsive-login-box h2 {
+                font-size: 1.5rem !important;
+            }
+
+            .responsive-login-box .btn-lg {
+                padding: 0.75rem !important;
+                font-size: 1rem !important;
+            }
+        }
+
+        /* Extra Small Phones */
+        @media (max-width: 360px) {
+            .responsive-login-box {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="auth-page">
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <!-- Signup Form - Full Width -->
+            <div class="col-12 d-flex align-items-center justify-content-center min-vh-100 px-3">
+                <div class="w-100" style="max-width: 500px;">
+                    <div class="auth-form-container responsive-login-box">
+                        <!-- Language Toggle -->
+                        <div class="text-end mb-4">
+                            <button class="btn btn-primary btn-sm" id="languageToggle" style="background: #4A90E2; border: none; border-radius: 8px; padding: 0.5rem 1rem;">
+                                <i class="fas fa-language me-1"></i>
+                                <span id="currentLang">EN</span>
+                            </button>
+                        </div>
+
+                        <!-- Welcome Header -->
+                        <div class="text-center mb-4">
+                            <img src="/images/logo.png" alt="Elreem Logo" height="100" class="mb-3">
+                            <div class="mb-3">
+                                <img src="/images/slogan.png" alt="Elreem Slogan" class="img-fluid" style="max-height: 50px;">
+                            </div>
+                            <h2 class="fw-bold mb-2" style="color: #2B1D14; font-size: 2rem;" data-en="Join Elreem" data-ar="انضم إلى الريم">Join Elreem</h2>
+                            <p class="text-muted" data-en="Create your account" data-ar="أنشئ حسابك">Create your account</p>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <h3 class="fw-bold" data-en="Create Account" data-ar="إنشاء حساب">Create Account</h3>
+                            <p class="text-muted" data-en="Join us today" data-ar="انضم إلينا اليوم">Join us today</p>
+                        </div>
+
+                        <!-- Flash Messages -->
+                        <% if (error && error.length > 0) { %>
+                            <div class="alert alert-danger" role="alert">
+                                <% error.forEach(function(message) { %>
+                                    <%= message %>
+                                <% }); %>
+                            </div>
+                        <% } %>
+
+                        <!-- Signup Form -->
+                        <form action="/signup" method="POST" class="needs-validation" novalidate>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="firstName" class="form-label" data-en="First Name" data-ar="الاسم الأول">First Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                        <div class="invalid-feedback" data-en="Please provide your first name." data-ar="يرجى إدخال الاسم الأول.">
+                                            Please provide your first name.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="lastName" class="form-label" data-en="Last Name" data-ar="الاسم الأخير">Last Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                        <div class="invalid-feedback" data-en="Please provide your last name." data-ar="يرجى إدخال الاسم الأخير.">
+                                            Please provide your last name.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label" data-en="Email Address" data-ar="البريد الإلكتروني">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    <div class="invalid-feedback" data-en="Please provide a valid email." data-ar="يرجى إدخال بريد إلكتروني صحيح.">
+                                        Please provide a valid email.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label" data-en="Phone Number" data-ar="رقم الهاتف">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input type="tel" class="form-control" id="phone" name="phone">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label" data-en="Password" data-ar="كلمة المرور">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <div class="invalid-feedback" data-en="Password must be at least 6 characters." data-ar="كلمة المرور يجب أن تكون 6 أحرف على الأقل.">
+                                        Password must be at least 6 characters.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label" data-en="Confirm Password" data-ar="تأكيد كلمة المرور">Confirm Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <div class="invalid-feedback" data-en="Passwords do not match." data-ar="كلمات المرور غير متطابقة.">
+                                        Passwords do not match.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 mb-3">
+                                <i class="fas fa-user-plus me-2"></i>
+                                <span data-en="Create Account" data-ar="إنشاء حساب">Create Account</span>
+                            </button>
+                        </form>
+
+                        <!-- Login link -->
+                        <div class="text-center">
+                            <p class="mb-0">
+                                <span data-en="Already have an account?" data-ar="لديك حساب بالفعل؟">Already have an account?</span>
+                                <a href="/login" class="text-decoration-none" data-en="Sign in" data-ar="تسجيل الدخول">Sign in</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+</html>
