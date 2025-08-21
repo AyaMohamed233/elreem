@@ -5,51 +5,44 @@
  * It uses PostgreSQL with connection pooling for optimal performance and reliability.
  */
 
-const { Pool } = require('pg');
+const postgresDB = require('./postgresql');
 require('dotenv').config();
 
 /**
- * PostgreSQL Pool Setup
- */
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false } // مهم علشان Railway
-});
-
-/**
- * Database wrapper class
- * Provides methods similar to SQLite style (run, get, all) but adapted for PostgreSQL
+ * Database wrapper that provides a consistent interface
+ * Compatible with the existing SQLite-style API while using PostgreSQL
  */
 class Database {
     constructor() {
-        this.pool = pool;
+        this.db = postgresDB;
     }
 
     /**
      * Connect to the database
-     * @returns {PoolClient}
+     * @returns {Promise<Pool>} Database connection pool
      */
     async connect() {
-        return await this.pool.connect();
+        return await this.db.connect();
     }
 
     /**
      * Close database connections
+     * @returns {Promise<void>}
      */
     async close() {
-        await this.pool.end();
+        return await this.db.close();
     }
 
     /**
      * Execute a query that modifies data (INSERT, UPDATE, DELETE)
      * @param {string} sql - SQL query
      * @param {Array} params - Query parameters
-     * @returns {Object} Result with id and changes count
+     * @returns {Promise<Object>} Result with id and changes count
      */
     async run(sql, params = []) {
-        const result = await this.pool.query(sql, params);
+        const result = await this.db.run(sql, params);
         return {
-            id: result.rows[0]?.id || null, // بيرجع id لو فيه
+            id: result.insertId,
             changes: result.rowCount
         };
     }
@@ -58,55 +51,37 @@ class Database {
      * Execute a query that returns a single row
      * @param {string} sql - SQL query
      * @param {Array} params - Query parameters
-     * @returns {Object|null} Single row or null
+     * @returns {Promise<Object|null>} Single row or null
      */
     async get(sql, params = []) {
-        const result = await this.pool.query(sql, params);
-        return result.rows[0] || null;
+        return await this.db.get(sql, params);
     }
 
     /**
      * Execute a query that returns multiple rows
      * @param {string} sql - SQL query
      * @param {Array} params - Query parameters
-     * @returns {Array} Array of rows
+     * @returns {Promise<Array>} Array of rows
      */
     async all(sql, params = []) {
-        const result = await this.pool.query(sql, params);
-        return result.rows;
+        return await this.db.all(sql, params);
     }
 
     /**
      * Execute a transaction
      * @param {Function} callback - Transaction callback
-     * @returns {any} Transaction result
+     * @returns {Promise<any>} Transaction result
      */
     async transaction(callback) {
-        const client = await this.pool.connect();
-        try {
-            await client.query('BEGIN');
-            const result = await callback(client);
-            await client.query('COMMIT');
-            return result;
-        } catch (err) {
-            await client.query('ROLLBACK');
-            throw err;
-        } finally {
-            client.release();
-        }
+        return await this.db.transaction(callback);
     }
 
     /**
      * Health check for the database connection
-     * @returns {boolean} True if healthy
+     * @returns {Promise<boolean>} True if healthy
      */
     async healthCheck() {
-        try {
-            await this.pool.query('SELECT 1');
-            return true;
-        } catch (err) {
-            return false;
-        }
+        return await this.db.healthCheck();
     }
 
     /**
@@ -114,12 +89,8 @@ class Database {
      * @returns {Object} Pool statistics
      */
     getPoolStats() {
-        return {
-            total: this.pool.totalCount,
-            idle: this.pool.idleCount,
-            waiting: this.pool.waitingCount
-        };
+        return this.db.getPoolStats();
     }
 }
 
-module.exports = new Database();
+module.exports = new Database(); 
