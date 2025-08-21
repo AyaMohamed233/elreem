@@ -5,44 +5,51 @@
  * It uses PostgreSQL with connection pooling for optimal performance and reliability.
  */
 
-const postgresDB = require('./postgresql');
+const { Pool } = require('pg');
 require('dotenv').config();
 
 /**
- * Database wrapper that provides a consistent interface
- * Compatible with the existing SQLite-style API while using PostgreSQL
+ * PostgreSQL Pool Setup
+ */
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false } // مهم علشان Railway
+});
+
+/**
+ * Database wrapper class
+ * Provides methods similar to SQLite style (run, get, all) but adapted for PostgreSQL
  */
 class Database {
     constructor() {
-        this.db = postgresDB;
+        this.pool = pool;
     }
 
     /**
      * Connect to the database
-     * @returns {Promise<Pool>} Database connection pool
+     * @returns {PoolClient}
      */
     async connect() {
-        return await this.db.connect();
+        return await this.pool.connect();
     }
 
     /**
      * Close database connections
-     * @returns {Promise<void>}
      */
     async close() {
-        return await this.db.close();
+        await this.pool.end();
     }
 
     /**
      * Execute a query that modifies data (INSERT, UPDATE, DELETE)
      * @param {string} sql - SQL query
      * @param {Array} params - Query parameters
-     * @returns {Promise<Object>} Result with id and changes count
+     * @returns {Object} Result with id and changes count
      */
     async run(sql, params = []) {
-        const result = await this.db.run(sql, params);
+        const result = await this.pool.query(sql, params);
         return {
-            id: result.insertId,
+            id: result.rows[0]?.id || null, // بيرجع id لو فيه
             changes: result.rowCount
         };
     }
@@ -51,37 +58,55 @@ class Database {
      * Execute a query that returns a single row
      * @param {string} sql - SQL query
      * @param {Array} params - Query parameters
-     * @returns {Promise<Object|null>} Single row or null
+     * @returns {Object|null} Single row or null
      */
     async get(sql, params = []) {
-        return await this.db.get(sql, params);
+        const result = await this.pool.query(sql, params);
+        return result.rows[0] || null;
     }
 
     /**
      * Execute a query that returns multiple rows
      * @param {string} sql - SQL query
      * @param {Array} params - Query parameters
-     * @returns {Promise<Array>} Array of rows
+     * @returns {Array} Array of rows
      */
     async all(sql, params = []) {
-        return await this.db.all(sql, params);
+        const result = await this.pool.query(sql, params);
+        return result.rows;
     }
 
     /**
      * Execute a transaction
      * @param {Function} callback - Transaction callback
-     * @returns {Promise<any>} Transaction result
+     * @returns {any} Transaction result
      */
     async transaction(callback) {
-        return await this.db.transaction(callback);
+        const client = await this.pool.connect();
+        try {
+            await client.query('BEGIN');
+            const result = await callback(client);
+            await client.query('COMMIT');
+            return result;
+        } catch (err) {
+            await client.query('ROLLBACK');
+            throw err;
+        } finally {
+            client.release();
+        }
     }
 
     /**
      * Health check for the database connection
-     * @returns {Promise<boolean>} True if healthy
+     * @returns {boolean} True if healthy
      */
     async healthCheck() {
-        return await this.db.healthCheck();
+        try {
+            await this.pool.query('SELECT 1');
+            return true;
+        } catch (err) {
+            return false;
+        }
     }
 
     /**
@@ -89,7 +114,11 @@ class Database {
      * @returns {Object} Pool statistics
      */
     getPoolStats() {
-        return this.db.getPoolStats();
+        return {
+            total: this.pool.totalCount,
+            idle: this.pool.idleCount,
+            waiting: this.pool.waitingCount
+        };
     }
 }
 
